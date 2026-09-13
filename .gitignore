@@ -1,0 +1,15 @@
+frontend/node_modules/
+
+# Python-generated files
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Local configuration and database files
+.env
+*.db
+
+# Frontend build output
+frontend/dist/
