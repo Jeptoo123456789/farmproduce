@@ -17,3 +17,16 @@ This repository contains a Render Blueprint with two services:
 Render generates `FARMMARKET_TOKEN_SECRET` automatically. SQLite is only a local
 fallback; production data must use PostgreSQL because Render service filesystems
 are not durable databases.
+
+## Frontend command settings
+
+The frontend is a Render Static Site, so it does not need a start command. If the
+service was created manually, remove `mpm start` and recreate it from this
+Blueprint, or set these values in the Render dashboard:
+
+- Root Directory: `frontend`
+- Build Command: `npm ci && npm run build`
+- Publish Directory: `dist`
+- Start Command: leave empty
+
+`mpm` is not an executable; `mpm start` will always exit with status 127.
