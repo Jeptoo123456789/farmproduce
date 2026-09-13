@@ -13,3 +13,6 @@ venv/
 
 # Frontend build output
 frontend/dist/
+
+# Vercel local project settings
+.vercel/
