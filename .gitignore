@@ -16,3 +16,4 @@ frontend/dist/
 
 # Vercel local project settings
 .vercel/
+.vercel
