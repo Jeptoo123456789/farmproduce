@@ -1,4 +1,5 @@
 import os
+import tempfile
 from pathlib import Path
 
 from sqlalchemy import create_engine
@@ -9,7 +10,11 @@ def database_url():
     configured_url = os.getenv("DATABASE_URL")
     if configured_url:
         return configured_url.replace("postgres://", "postgresql+psycopg://", 1)
-    local_database = Path(__file__).resolve().parents[1] / "farmproduce.db"
+
+    # Vercel serverless instances are read-only except for a few writable temp areas.
+    # SQLite must not be placed in the repo root for production deployments.
+    temp_dir = Path(tempfile.gettempdir())
+    local_database = temp_dir / "farmproduce.db"
     return f"sqlite:///{local_database}"
 
 
