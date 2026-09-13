@@ -15,14 +15,10 @@ services:
 
   - type: web
     name: farmproduce-frontend
-    runtime: static
+    runtime: node
     rootDir: frontend
     buildCommand: npm ci && npm run build
-    staticPublishPath: dist
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
+    startCommand: npm run start
     envVars:
       - key: VITE_API_BASE_URL
         sync: false

@@ -3,7 +3,7 @@
 This repository contains a Render Blueprint with two services:
 
 - `farmproduce-api`: FastAPI web service.
-- `farmproduce-frontend`: Vite static site.
+- `farmproduce-frontend`: Vite Node web service.
 
 ## Deploy
 
@@ -20,13 +20,12 @@ are not durable databases.
 
 ## Frontend command settings
 
-The frontend is a Render Static Site, so it does not need a start command. If the
-service was created manually, remove `mpm start` and recreate it from this
-Blueprint, or set these values in the Render dashboard:
+The frontend runs as a Render Web Service. If the service was created manually,
+remove `mpm start` and set these values in the Render dashboard:
 
 - Root Directory: `frontend`
 - Build Command: `npm ci && npm run build`
-- Publish Directory: `dist`
-- Start Command: leave empty
+- Start Command: `npm run start`
 
+The start script runs Vite’s production preview server on `0.0.0.0:$PORT`.
 `mpm` is not an executable; `mpm start` will always exit with status 127.
