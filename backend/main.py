@@ -121,7 +121,7 @@ def root():
 
 
 @app.post("/uploads/image")
-def upload_image(payload: ImageUpload):
+def upload_image(request: Request, payload: ImageUpload):
     try:
         header, encoded = payload.dataUrl.split(",", 1)
         mime_type = header.split(";", 1)[0].removeprefix("data:")
@@ -135,7 +135,8 @@ def upload_image(payload: ImageUpload):
     extension = {"image/jpeg": "jpg", "image/png": "png", "image/webp": "webp"}[mime_type]
     filename = f"{uuid.uuid4().hex}.{extension}"
     (upload_dir / filename).write_bytes(image_bytes)
-    return as_success("Image uploaded successfully", {"imageUrl": f"/uploads/{filename}"})
+    image_url = f"{str(request.base_url).rstrip('/')}/uploads/{filename}"
+    return as_success("Image uploaded successfully", {"imageUrl": image_url})
 
 
 def auth_user(user, role: str):
