@@ -78,14 +78,10 @@ def ensure_auth_columns():
 ensure_auth_columns()
 
 app = FastAPI(title="Farm Produce Marketplace API", version="1.0.0")
-frontend_origins = [
-    origin.strip().rstrip("/")
-    for origin in os.getenv("FRONTEND_URL", "http://localhost:5173").split(",")
-    if origin.strip()
-]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=frontend_origins,
+    allow_origins=[],
+    allow_origin_regex=r".*",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
