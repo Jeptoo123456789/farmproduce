@@ -9,7 +9,11 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 def database_url():
     configured_url = os.getenv("DATABASE_URL")
     if configured_url:
-        return configured_url.replace("postgres://", "postgresql+psycopg://", 1)
+        if configured_url.startswith("postgresql+psycopg://"):
+            return configured_url
+        return configured_url.replace("postgres://", "postgresql+psycopg://", 1).replace(
+            "postgresql://", "postgresql+psycopg://", 1
+        )
 
     # Vercel serverless instances are read-only except for a few writable temp areas.
     # SQLite must not be placed in the repo root for production deployments.
