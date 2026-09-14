@@ -79,6 +79,11 @@ class ProductUpdate(BaseModel):
     status: Optional[Literal["AVAILABLE", "OUT_OF_STOCK", "INACTIVE"]] = None
 
 
+class ImageUpload(BaseModel):
+    filename: str = Field(..., min_length=1, max_length=120)
+    dataUrl: str = Field(..., min_length=20)
+
+
 class ProductStockAdjust(BaseModel):
     amount: int = Field(..., gt=0)
 

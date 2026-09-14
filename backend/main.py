@@ -1,11 +1,15 @@
 from __future__ import annotations
 
+import base64
 import os
+import uuid
+from pathlib import Path
 from typing import Any
 
 from fastapi import Depends, FastAPI, HTTPException, Query, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import inspect, text
 from sqlalchemy.orm import Session
@@ -25,6 +29,7 @@ from backend.schemas import (
     OrderStatusUpdate,
     LoginRequest,
     ProductCreate,
+    ImageUpload,
     SellerRegistration,
     ProductStockAdjust,
     ProductUpdate,
@@ -78,6 +83,9 @@ def ensure_auth_columns():
 ensure_auth_columns()
 
 app = FastAPI(title="Farm Produce Marketplace API", version="1.0.0")
+upload_dir = Path(os.getenv("UPLOAD_DIR", Path(__file__).resolve().parent / "uploads"))
+upload_dir.mkdir(parents=True, exist_ok=True)
+app.mount("/uploads", StaticFiles(directory=upload_dir), name="uploads")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[],
@@ -110,6 +118,24 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 @app.get("/")
 def root():
     return as_success("Farm Produce Marketplace API is running", {"name": "Farm Produce Marketplace"})
+
+
+@app.post("/uploads/image")
+def upload_image(payload: ImageUpload):
+    try:
+        header, encoded = payload.dataUrl.split(",", 1)
+        mime_type = header.split(";", 1)[0].removeprefix("data:")
+        if mime_type not in {"image/jpeg", "image/png", "image/webp"}:
+            raise ValueError
+        image_bytes = base64.b64decode(encoded, validate=True)
+    except (ValueError, UnicodeError, base64.binascii.Error) as exc:
+        raise HTTPException(status_code=400, detail="Upload a valid JPG, PNG, or WebP image") from exc
+    if len(image_bytes) > 5 * 1024 * 1024:
+        raise HTTPException(status_code=413, detail="Images must be 5 MB or smaller")
+    extension = {"image/jpeg": "jpg", "image/png": "png", "image/webp": "webp"}[mime_type]
+    filename = f"{uuid.uuid4().hex}.{extension}"
+    (upload_dir / filename).write_bytes(image_bytes)
+    return as_success("Image uploaded successfully", {"imageUrl": f"/uploads/{filename}"})
 
 
 def auth_user(user, role: str):

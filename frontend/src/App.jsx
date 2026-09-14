@@ -16,6 +16,7 @@ import { productImage } from './utils/productMedia'
 const categories = ['Vegetables', 'Fruits', 'Cereals', 'Legumes', 'Dairy', 'Poultry', 'Root crops']
 const money = (value) => `KSh ${Number(value || 0).toLocaleString()}`
 const date = (value) => value ? new Date(value).toLocaleDateString('en-KE', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'
+const fileAsDataUrl = (file) => new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = reject; reader.readAsDataURL(file) })
 function ErrorBox({ message }) { return message ? <div className="error-box">{message}</div> : null }
 function Empty({ title, action, to = '/products' }) { return <div className="empty-state"><span className="empty-mark">+</span><h3>{title}</h3>{action && <Link className="button" to={to}>{action}</Link>}</div> }
 
