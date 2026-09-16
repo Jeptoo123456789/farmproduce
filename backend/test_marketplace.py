@@ -73,6 +73,39 @@ def test_create_category_and_product_and_filter():
     assert item["price"] == 120
 
 
+def test_search_filters_match_farmer_and_location_names():
+    reset_db()
+    category = client.post("/categories", json={"name": "Vegetables", "description": "Fresh vegetables"})
+    farmer = client.post("/farmers", json={
+        "name": "Mary Wanjiku",
+        "phone": "+254700000010",
+        "email": "mary@example.com",
+        "location": "Kiambu",
+        "farmName": "Green Acres",
+        "description": "Vegetable farmer"
+    })
+    product = client.post("/products", json={
+        "farmerId": farmer.json()["data"]["id"],
+        "categoryId": category.json()["data"]["id"],
+        "name": "Kale",
+        "description": "Fresh leafy greens",
+        "price": 130,
+        "unit": "bunch",
+        "quantityAvailable": 18,
+        "location": "Kiambu",
+        "status": "AVAILABLE"
+    })
+    product_id = product.json()["data"]["id"]
+
+    by_farmer = client.get("/products?search=Mary")
+    assert by_farmer.status_code == 200
+    assert any(item["id"] == product_id for item in by_farmer.json()["data"])
+
+    by_location = client.get("/products?search=Kiambu")
+    assert by_location.status_code == 200
+    assert any(item["id"] == product_id for item in by_location.json()["data"])
+
+
 def test_stock_updates_and_cannot_go_negative():
     reset_db()
     category = client.post("/categories", json={"name": "Cereals", "description": "Cereals"})

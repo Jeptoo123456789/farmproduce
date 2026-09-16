@@ -8,10 +8,10 @@ export function CartProvider({ children }) {
   const addItem = (product, quantity = 1) => {
     const existing = items.find((item) => item.product.id === product.id)
     const nextQuantity = Math.min((existing?.quantity || 0) + quantity, product.quantityAvailable)
-    persist(existing ? items.map((item) => item.id === product.id ? { ...item, quantity: nextQuantity, product } : item) : [...items, { product, quantity: nextQuantity }])
+    persist(existing ? items.map((item) => item.product.id === product.id ? { ...item, quantity: nextQuantity, product } : item) : [...items, { product, quantity: nextQuantity }])
   }
-  const updateQuantity = (id, quantity) => persist(items.map((item) => item.id === id ? { ...item, quantity: Math.max(1, Math.min(quantity, item.product.quantityAvailable)) } : item))
-  const removeItem = (id) => persist(items.filter((item) => item.id !== id))
+  const updateQuantity = (id, quantity) => persist(items.map((item) => item.product.id === id ? { ...item, quantity: Math.max(1, Math.min(quantity, item.product.quantityAvailable)) } : item))
+  const removeItem = (id) => persist(items.filter((item) => item.product.id !== id))
   const subtotal = useMemo(() => items.reduce((sum, item) => sum + item.product.price * item.quantity, 0), [items])
   return <CartContext.Provider value={{ items, addItem, updateQuantity, removeItem, subtotal, count: items.reduce((sum, item) => sum + item.quantity, 0) }}>{children}</CartContext.Provider>
 }
