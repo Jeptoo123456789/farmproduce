@@ -129,9 +129,11 @@ def list_products(db: Session, *, category: str | None, farmer: str | None, loca
         query = query.join(Product.category).filter(Category.name.ilike(category.strip()))
     if farmer:
         query = query.join(Product.farmer).filter(
-            Farmer.id == farmer.strip() |
-            Farmer.name.ilike(farmer.strip()) |
-            Farmer.farmName.ilike(farmer.strip())
+            or_(
+                Farmer.id == farmer.strip(),
+                Farmer.name.ilike(farmer.strip()),
+                Farmer.farmName.ilike(farmer.strip()),
+            )
         )
     if location:
         query = query.filter(Product.location.ilike(f"%{location.strip()}%"))
