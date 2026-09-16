@@ -128,7 +128,11 @@ def list_products(db: Session, *, category: str | None, farmer: str | None, loca
     if category:
         query = query.join(Product.category).filter(Category.name.ilike(category.strip()))
     if farmer:
-        query = query.join(Product.farmer).filter(Farmer.id == farmer.strip() or Farmer.name.ilike(farmer.strip()))
+        query = query.join(Product.farmer).filter(
+            Farmer.id == farmer.strip() |
+            Farmer.name.ilike(farmer.strip()) |
+            Farmer.farmName.ilike(farmer.strip())
+        )
     if location:
         query = query.filter(Product.location.ilike(f"%{location.strip()}%"))
     if min_price is not None:
@@ -139,7 +143,19 @@ def list_products(db: Session, *, category: str | None, farmer: str | None, loca
         query = query.filter(Product.status == status.upper())
     if search:
         term = f"%{search.strip()}%"
-        query = query.filter(or_(Product.name.ilike(term), Product.description.ilike(term)))
+        query = query.outerjoin(Product.category).outerjoin(Product.farmer)
+        query = query.filter(
+            or_(
+                Product.name.ilike(term),
+                Product.description.ilike(term),
+                Product.location.ilike(term),
+                Product.unit.ilike(term),
+                Category.name.ilike(term),
+                Farmer.name.ilike(term),
+                Farmer.farmName.ilike(term),
+                Farmer.location.ilike(term),
+            )
+        )
 
     valid_sort_fields = {"name": Product.name, "price": Product.price, "createdAt": Product.createdAt, "location": Product.location}
     sort_column = valid_sort_fields.get(sort_by, Product.createdAt)
