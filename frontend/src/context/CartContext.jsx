@@ -6,7 +6,7 @@ export function CartProvider({ children }) {
   const [items, setItems] = useState(() => JSON.parse(localStorage.getItem('farmmarket_cart') || '[]'))
   const persist = (next) => { setItems(next); localStorage.setItem('farmmarket_cart', JSON.stringify(next)) }
   const addItem = (product, quantity = 1) => {
-    const existing = items.find((item) => item.id === product.id)
+    const existing = items.find((item) => item.product.id === product.id)
     const nextQuantity = Math.min((existing?.quantity || 0) + quantity, product.quantityAvailable)
     persist(existing ? items.map((item) => item.id === product.id ? { ...item, quantity: nextQuantity, product } : item) : [...items, { product, quantity: nextQuantity }])
   }
