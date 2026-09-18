@@ -1,0 +1,69 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Start FarmMarket frontend",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"dev",
+				"--",
+				"--host",
+				"0.0.0.0"
+			],
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "Start FarmMarket frontend (npm.cmd)",
+			"type": "shell",
+			"command": "npm.cmd",
+			"args": [
+				"run",
+				"dev",
+				"--",
+				"--host",
+				"0.0.0.0"
+			],
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "Start FarmMarket frontend (workspace root)",
+			"type": "shell",
+			"command": "npm.cmd",
+			"args": [
+				"--prefix",
+				"frontend",
+				"run",
+				"dev",
+				"--",
+				"--host",
+				"0.0.0.0"
+			],
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "Start FarmMarket API",
+			"type": "shell",
+			"command": ".venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"uvicorn",
+				"backend.main:app",
+				"--host",
+				"127.0.0.1",
+				"--port",
+				"8000"
+			],
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "build"
+		}
+	]
+}
