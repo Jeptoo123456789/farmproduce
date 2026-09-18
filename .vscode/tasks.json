@@ -64,6 +64,60 @@
 			"isBackground": true,
 			"problemMatcher": [],
 			"group": "build"
+		},
+		{
+			"label": "Find FarmMarket API process",
+			"type": "shell",
+			"command": "tasklist.exe",
+			"args": [
+				"/FI",
+				"IMAGENAME eq python.exe"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Restart FarmMarket API",
+			"type": "shell",
+			"command": "taskkill.exe",
+			"args": [
+				"/PID",
+				"3740",
+				"/F"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Start FarmMarket API (fixed)",
+			"type": "shell",
+			"command": ".venv\\Scripts\\python.exe",
+			"args": [
+				"-m",
+				"uvicorn",
+				"backend.main:app",
+				"--host",
+				"127.0.0.1",
+				"--port",
+				"8000"
+			],
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "Build FarmMarket frontend (npm.cmd)",
+			"type": "shell",
+			"command": "npm.cmd",
+			"args": [
+				"--prefix",
+				"frontend",
+				"run",
+				"build"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
 		}
 	]
 }

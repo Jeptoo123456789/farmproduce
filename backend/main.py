@@ -60,6 +60,7 @@ from backend.services import (
     list_farmers,
     list_orders,
     list_products,
+    list_products,
     update_buyer,
     update_category,
     update_farmer,
